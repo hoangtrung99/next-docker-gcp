@@ -1,4 +1,18 @@
+# SETUP
+# 1. Enable Google Cloud Run API
+# 2. Enable Google Artifact Registry API
+# 3. Create a service account with the following roles:
+#   - Cloud Run Admin
+#   - Artifact Registry Administrator
+#   - Cloud Run Service Agent
+#   - Service Account User
+# 4. Setup a GitHub secret called GOOGLE_CREDENTIALS with the service account key
+# 5. Create a Google Artifact Registry repository
+# 6. Setup environment variables in the workflow file
+
+
 name: Deploy to Cloud Run
+
 on:
   workflow_dispatch:
 
