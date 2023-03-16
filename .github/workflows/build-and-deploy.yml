@@ -1,0 +1,62 @@
+name: Deploy to Cloud Run
+on:
+  workflow_dispatch:
+
+env:
+    PROJECT_ID: dynamic-vehicle-380810 
+    GAR_LOCATION: asia-southeast1
+    REPOSITORY: nextjs
+    SERVICE: nextjs
+    REGION: asia-southeast1
+
+jobs:
+  deploy:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: 'actions/checkout@v3'
+
+      # https://github.com/google-github-actions/auth
+      - name: 'Authenticate to Google Cloud'
+        id: auth
+        uses: 'google-github-actions/auth@v1'
+        with:
+          token_format: 'access_token'
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: debug output
+        run: |
+          echo ${{ steps.auth.outputs.access_token }}
+
+      - name: 'Docker Login' 
+        uses: 'docker/login-action@v2'
+        with:
+          registry: '${{ env.GAR_LOCATION }}-docker.pkg.dev'
+          username: 'oauth2accesstoken'
+          password: '${{ steps.auth.outputs.access_token }}'
+
+      - name: Build and push Docker image
+      # https://github.com/docker/build-push-action
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest
+
+
+      # https://github.com/google-github-actions/setup-gcloud
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+      
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy nextjs \
+            --image ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated
