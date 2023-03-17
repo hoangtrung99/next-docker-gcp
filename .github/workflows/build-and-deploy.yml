@@ -28,6 +28,7 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write'
+    environment: test
 
     runs-on: ubuntu-latest
 
@@ -64,6 +65,9 @@ jobs:
           context: .
           push: true
           tags: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:latest
+          build-args: |
+            NEXT_PUBLIC_TEST_PUBLIC_VAR=${{ secrets.NEXT_PUBLIC_VAR }}
+            NEXT_PRIVATE_VAR=${{ secrets.PRIVATE_VAR }}
 
 
       # https://github.com/google-github-actions/setup-gcloud
