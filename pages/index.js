@@ -10,6 +10,8 @@ export default function Home({ private_var }) {
       <p>{process.env.NEXT_PRIVATE_VAR}</p>
       <p>private var from server</p>
       <p>{private_var}</p>
+      <p>Public var</p>
+      <p>{process.env.NEXT_PUBLIC_TEST_PRIVATE_KEY}</p>
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
