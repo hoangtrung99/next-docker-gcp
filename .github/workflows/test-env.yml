@@ -1,0 +1,30 @@
+
+name: Test env
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    environment:
+      name: test
+      url: https://nextjs-pbd7gy26ca-as.a.run.app
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: 'actions/checkout@v3'
+
+      - name: Create .env file
+        run: |
+          echo ${{ vars.PRIVATE_KEY }}
+          echo NEXT_PUBLIC_TEST_PUBLIC_VAR=${{ secrets.NEXT_PUBLIC_VAR }} >> .env
+          echo NEXT_PRIVATE_VAR=${{ secrets.PRIVATE_VAR }} >> .env
+          echo NEXT_PUBLIC_TEST_PRIVATE_KEY='"${{ vars.PRIVATE_KEY }}"' >> .env
+          cat .env

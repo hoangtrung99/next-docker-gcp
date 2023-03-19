@@ -61,7 +61,7 @@ jobs:
         run: |
           echo NEXT_PUBLIC_TEST_PUBLIC_VAR=${{ secrets.NEXT_PUBLIC_VAR }} >> .env
           echo NEXT_PRIVATE_VAR=${{ secrets.PRIVATE_VAR }} >> .env
-          echo NEXT_PUBLIC_TEST_PRIVATE_KEY=\'\"${{ vars.PRIVATE_KEY }}\"\' >> .env
+          echo NEXT_PUBLIC_TEST_PRIVATE_KEY='"${{ vars.PRIVATE_KEY }}"' >> .env
           cat .env
 
       - name: Build and push Docker image
